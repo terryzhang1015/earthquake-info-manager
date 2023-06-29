@@ -1,0 +1,5 @@
+{"properties": [{
+  "name": "paths.temp-path",
+  "type": "java.lang.String",
+  "description": "The directory for server side temp file storage"
+}]}

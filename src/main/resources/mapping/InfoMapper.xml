@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sugon.mybatis.mapper.InfoMapper">
+    <insert id="addInfo" parameterType="Info">
+        INSERT INTO info.nature_monitor_earthquakeinfo VALUES
+        (#{id}, #{time}, #{lat}, #{lon}, #{deep}, #{level}, #{position})
+    </insert>
+
+    <delete id="deleteInfo" parameterType="int">
+        DELETE FROM info.nature_monitor_earthquakeinfo WHERE Id = #{id};
+    </delete>
+
+    <update id="updateInfo" parameterType="Info">
+        UPDATE info.nature_monitor_earthquakeinfo SET
+        Time = #{time}, Lat = #{lat}, Lon = #{lon}, Deep = #{deep},
+        Level = #{level}, Position = #{position} WHERE Id = #{id}
+    </update>
+
+    <select id="getAllInfo" resultType="Info">
+        SELECT * FROM info.nature_monitor_earthquakeinfo
+        ORDER BY Id ASC
+    </select>
+
+    <select id="get10Info" parameterType="int" resultType="Info">
+        SELECT * FROM info.nature_monitor_earthquakeinfo LIMIT #{start}, 10
+    </select>
+
+    <select id="getInfoById" parameterType="int" resultType="Info">
+        SELECT * FROM info.nature_monitor_earthquakeinfo WHERE Id = #{id}
+    </select>
+
+    <delete id="clear">
+        TRUNCATE TABLE info.nature_monitor_earthquakeinfo
+    </delete>
+</mapper>

@@ -1,0 +1,29 @@
+server:
+  port: 8090
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306
+    username: earthquakeinfo
+    password: earthquake
+  servlet:
+    multipart:
+      max-request-size: 1GB
+      max-file-size: 1GB
+  mvc:
+    hiddenmethod:
+      filter:
+        enabled: true
+mybatis:
+  mapper-locations: classpath:mapping/*Mapper.xml
+  type-aliases-package: com.sugon.mybatis.entity
+  configuration:
+    map-underscore-to-camel-case: true   # auto mapping
+logging:
+  level:
+    com:
+      sugon:
+        mybatis:
+          mapper: debug
+paths:
+  temp-path: /server/temp/
