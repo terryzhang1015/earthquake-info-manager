@@ -1,4 +1,3 @@
-import { UploadOutlined } from '@ant-design/icons';
 import { Upload, Button } from 'antd';
 
 export const InfoUpload = ({disabled, action, onStart, onFinish}) => (
@@ -16,7 +15,7 @@ export const InfoUpload = ({disabled, action, onStart, onFinish}) => (
       onFinish();
     }}
   >
-    <Button className='upload-button' type='primary' icon={<UploadOutlined />}>
+    <Button className='upload-button' type='primary'>
       Upload File
     </Button>
   </Upload>
