@@ -22,8 +22,14 @@
         ORDER BY Id ASC
     </select>
 
-    <select id="get10Info" parameterType="int" resultType="Info">
-        SELECT * FROM info.nature_monitor_earthquakeinfo LIMIT #{start}, 10
+    <select id="getInfoBetweenTimes" parameterType="String" resultType="Info">
+        SELECT * FROM info.nature_monitor_earthquakeinfo WHERE
+        Time BETWEEN #{st} AND #{ed} ORDER BY Time ASC
+    </select>
+
+    <select id="getInfoBetweenLevels" parameterType="int" resultType="Info">
+        SELECT * FROM info.nature_monitor_earthquakeinfo WHERE
+        Deep BETWEEN #{d1} AND #{d2} ORDER BY Deep ASC
     </select>
 
     <select id="getInfoById" parameterType="int" resultType="Info">

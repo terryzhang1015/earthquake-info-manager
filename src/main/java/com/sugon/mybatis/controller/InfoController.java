@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -46,6 +47,18 @@ public class InfoController {
     @GetMapping("/{id}")
     public Response getInfoById(@PathVariable int id) throws Exception {
         return Response.success(infoService.getInfoById(id));
+    }
+
+    @GetMapping("/time")
+    public Response getInfoBetweenTimes(@RequestParam(name = "st") String st,
+            @RequestParam(name = "ed") String ed) throws Exception {
+        return Response.success(infoService.getInfoBetweenTimes(st, ed));
+    }
+
+    @GetMapping("/level")
+    public Response getInfoBetweenLevels(@RequestParam(name = "d1") int d1,
+            @RequestParam(name = "d2") int d2) throws Exception {
+        return Response.success(infoService.getInfoBetweenLevels(d1, d2));
     }
 
     @PutMapping

@@ -10,7 +10,8 @@ import com.sugon.mybatis.entity.Info;
 public interface InfoMapper {
     int addInfo(Info info);
     List<Info> getAllInfo();
-    List<Info> get10Info(int start);
+    List<Info> getInfoBetweenTimes(String st, String ed);
+    List<Info> getInfoBetweenLevels(int d1, int d2);
     Info getInfoById(int id);
     int deleteInfo(int id);
     int updateInfo(Info info);
