@@ -39,16 +39,16 @@ export const ModModal = ({isAddInfo, updateInfo, originInfo, open, closeModal}) 
           <DatePicker showTime format="YYYY-MM-DD HH:mm:ss" />
         </Form.Item>
         <Form.Item name='lat' label='Lat' rules={ruleRequired}>
-          <InputNumber />
+          <InputNumber min={-90} max={90} />
         </Form.Item>
         <Form.Item name='lon' label='Lon' rules={ruleRequired}>
-          <InputNumber />
+          <InputNumber min={-180} max={180} />
         </Form.Item>
         <Form.Item name='deep' label='Deep' rules={ruleRequired}>
-          <InputNumber />
+          <InputNumber min={0} max={10000000} />
         </Form.Item>
         <Form.Item name='level' label='Level' rules={ruleRequired}>
-          <InputNumber />
+          <InputNumber min={0} max={9.9} />
         </Form.Item>
         <Form.Item name='position' label='Position'>
           <Input.TextArea showCount autoSize maxLength={120} />
