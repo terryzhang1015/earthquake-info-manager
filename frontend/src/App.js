@@ -1,4 +1,4 @@
-import './App.css';
+import './styles/App.css';
 import { useEffect, useState } from 'react';
 import { Button, message, Space } from 'antd';
 import { AddInfoButton } from './AddInfoButton';
@@ -54,16 +54,16 @@ const App = () => {
     setSelectedKeys([]);
   }
 
-  const deleteInfo = async (index) => {
+  const deleteInfo = async (index, noShowOk) => {
     const response = await fetch('/info/' + infoList[index].id, {method: 'DELETE'});
     const body = await response.json();
-    handleError(body, true);
+    handleError(body, noShowOk);
   }
 
   const deleteSelectedInfo = async () => {
     setLoading(true);
-    for (let i in selectedKeys)
-      await deleteInfo(selectedKeys[i]);
+    for (const i of selectedKeys)
+      await deleteInfo(i, true);
     getAllInfo();
   }
 
@@ -103,18 +103,10 @@ const App = () => {
           onStart={() => setLoading(true)}
           onFinish={getAllInfo}
         />
-        <Button
-          type='primary'
-          loading={loading}
-          onClick={deleteSelectedInfo}
-        >
+        <Button type='primary' loading={loading} onClick={deleteSelectedInfo}>
           Delete Chosen
         </Button>
-        <Button
-          type='primary'
-          loading={loading}
-          onClick={clear}
-        >
+        <Button type='primary' loading={loading} onClick={clear}>
           Delete All
         </Button>
       </Space>
@@ -124,9 +116,9 @@ const App = () => {
         selectedRowKeys={selectedKeys}
         onChange={(newKeys) => setSelectedKeys(newKeys)}
         updateInfo={updateInfo}
-        deleteInfo={(index) => {
+        deleteInfo={async (index) => {
           setLoading(true);
-          deleteInfo(index);
+          await deleteInfo(index);
           getAllInfo();
           setLoading(false);
         }}
