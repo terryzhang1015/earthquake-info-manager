@@ -28,28 +28,30 @@ export const InfoTable = ({updateInfo, deleteInfo, loading,
   };
 
   return (
-    <Table
-      rowSelection={rowSelection}
-      columns={cols}
-      dataSource={infoList.map((info, index) => {
-        info['modify'] = (
-          <Space>
-            <Button loading={loading} onClick={() => setOpenMod(index)}>
-              Modify
-            </Button>
-            <DeleteButton loading={loading} deleteInfo={() => deleteInfo(index)}>
-              Delete
-            </DeleteButton>
-            <ModModal
-              open={openMod === index}
-              originInfo={info}
-              updateInfo={updateInfo}
-              closeModal={() => setOpenMod(-1)}
-            />
-          </Space>
-        );
-        return info;
-      })}
-    />
+    <div>
+      <Table
+        rowSelection={rowSelection}
+        columns={cols}
+        dataSource={infoList.map((info) => {
+          info.modify = (
+            <Space>
+              <Button loading={loading} onClick={() => setOpenMod(info.key)}>
+                Modify
+              </Button>
+              <DeleteButton loading={loading} deleteInfo={() => deleteInfo(info.key)}>
+                Delete
+              </DeleteButton>
+            </Space>
+          );
+          return info;
+        })}
+      />
+      <ModModal
+        open={openMod ^ -1}
+        originInfo={infoList[openMod]}
+        updateInfo={updateInfo}
+        closeModal={() => setOpenMod(-1)}
+      />
+    </div>
   );
 }

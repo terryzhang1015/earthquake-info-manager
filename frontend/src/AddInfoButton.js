@@ -10,7 +10,7 @@ export const AddInfoButton = ({loading, addInfo}) => {
       <Button
         type='primary'
         loading={loading}
-        onClick={() => {setOpenMod(true);}}
+        onClick={() => setOpenMod(true)}
       >
         Add info
       </Button>

@@ -63,7 +63,6 @@ const App = () => {
 
   const deleteSelectedInfo = async () => {
     setLoading(true);
-    console.log(selectedKeys);
     for (const i of selectedKeys)
       await deleteInfo(i, true);
     getAllInfo();

@@ -1,11 +1,9 @@
 import { Modal, Form, Input, InputNumber, DatePicker } from 'antd';
 import dayjs from 'dayjs';
-import { useState } from 'react';
 
 const ruleRequired = [{required:true, message:'Cannot be empty'}];
 
 export const ModModal = ({isAddInfo, updateInfo, originInfo, open, closeModal}) => {
-  const [showInfo, setShowInfo] = useState(originInfo);
   const [form] = Form.useForm();
 
   return (
@@ -13,28 +11,29 @@ export const ModModal = ({isAddInfo, updateInfo, originInfo, open, closeModal}) 
       title='Modify Information'
       okText='Confirm'
       open={open}
-      onOk={() => {
-        form.validateFields().then((values) => {
-          values.time = values.time.format('YYYY-MM-DD HH:mm:ss');
-          if (!isAddInfo) values.id = originInfo.id;
-          updateInfo(values);
-          isAddInfo ? form.resetFields() : setShowInfo(values);
-          closeModal();
-        }).catch(() => console.log('Empty item'));
+      afterOpenChange={(open) => {if (open) form.resetFields();}}
+      onOk={async () => {
+        const values = await form.validateFields();
+        values.time = values.time.format('YYYY-MM-DD HH:mm:ss');
+        if (!isAddInfo) values.id = originInfo.id;
+        updateInfo(values);
+        closeModal();
       }}
       onCancel={closeModal}
     >
-      <Form form={form} layout='horizontal' initialValues={showInfo && {
-            'time': dayjs(showInfo.time),
-            'lat': showInfo.lat,
-            'lon': showInfo.lon,
-            'deep': showInfo.deep,
-            'level': showInfo.level,
-            'position': showInfo.position,
-          }}>
-        {isAddInfo && <Form.Item name='id' label='Id' rules={ruleRequired}>
-          <InputNumber />
-        </Form.Item>}
+      <Form form={form} layout='horizontal' initialValues={originInfo && { 
+        'time': dayjs(originInfo.time),
+        'lat': originInfo.lat,
+        'lon': originInfo.lon,
+        'deep': originInfo.deep,
+        'level': originInfo.level,
+        'position': originInfo.position,
+      }}>
+        {
+          isAddInfo && <Form.Item name='id' label='Id' rules={ruleRequired}>
+            <InputNumber />
+          </Form.Item>
+        }
         <Form.Item name='time' label='Time' rules={ruleRequired}>
           <DatePicker showTime format="YYYY-MM-DD HH:mm:ss" />
         </Form.Item>
