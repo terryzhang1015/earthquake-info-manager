@@ -1,8 +1,8 @@
 import { Upload, Button } from 'antd';
 
-export const InfoUpload = ({disabled, action, onStart, onFinish}) => (
+export const InfoUpload = ({loading, action, onStart, onFinish}) => (
   <Upload
-    disabled={disabled}
+    disabled={loading}
     maxCount={1}
     multiple={false}
     action={action}
@@ -15,8 +15,6 @@ export const InfoUpload = ({disabled, action, onStart, onFinish}) => (
       onFinish();
     }}
   >
-    <Button className='upload-button' type='primary'>
-      Upload File
-    </Button>
+    <Button type='primary' loading={loading}>Upload File</Button>
   </Upload>
 );

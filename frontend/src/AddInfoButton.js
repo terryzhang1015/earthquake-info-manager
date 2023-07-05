@@ -2,14 +2,15 @@ import { Button } from 'antd';
 import { ModModal } from './ModModal';
 import { useState } from 'react';
 
-export const AddInfoButton = ({disabled, addInfo}) => {
+export const AddInfoButton = ({loading, addInfo}) => {
   const [openMod, setOpenMod] = useState(false);
 
   return (
     <div>
       <Button
         type='primary'
-        onClick={() => {if (!disabled) setOpenMod(true);}}
+        loading={loading}
+        onClick={() => {setOpenMod(true);}}
       >
         Add info
       </Button>

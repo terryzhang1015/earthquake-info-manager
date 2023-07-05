@@ -1,4 +1,4 @@
-import { Table, Button } from 'antd';
+import { Table, Button, Space } from 'antd';
 import { ModModal } from './ModModal';
 import { useState } from 'react';
 
@@ -13,7 +13,7 @@ const cols = [
   {title: null, dataIndex: 'modify'},
 ];
 
-export const InfoTable = ({updateInfo, disableModal,
+export const InfoTable = ({updateInfo, deleteInfo, loading,
       infoList, selectedRowKeys, onChange}) => {
   const [openMod, setOpenMod] = useState(-1);
   const rowSelection = {
@@ -32,9 +32,12 @@ export const InfoTable = ({updateInfo, disableModal,
       columns={cols}
       dataSource={infoList.map((info, index) => {
         info['modify'] = (
-          <div>
-            <Button onClick={() => {if (!disableModal) setOpenMod(index);}}>
+          <Space>
+            <Button loading={loading} onClick={() => setOpenMod(index)}>
               Modify
+            </Button>
+            <Button loading={loading} onClick={() => deleteInfo(index)}>
+              Delete
             </Button>
             <ModModal
               open={openMod === index}
@@ -42,7 +45,7 @@ export const InfoTable = ({updateInfo, disableModal,
               updateInfo={updateInfo}
               closeModal={() => setOpenMod(-1)}
             />
-          </div>
+          </Space>
         );
         return info;
       })}

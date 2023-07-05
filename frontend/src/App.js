@@ -8,30 +8,8 @@ import { InfoUpload } from './InfoUpload';
 const App = () => {
   const [infoList, setInfoList] = useState([]);
   const [selectedKeys, setSelectedKeys] = useState([]);
-  const [loadings, setLoadings] = useState(Array(2).fill(false));
+  const [loading, setLoading] = useState(false);
   const [msgApi, context] = message.useMessage();
-
-  const handleSelectChange = (newKeys) => setSelectedKeys(newKeys);
-
-  const enterLoading = (loadingList) => {
-    setLoadings((prevLoadings) => {
-      const newLoadings = [...prevLoadings];
-      for (let i in loadingList)
-        newLoadings[loadingList[i]] = true;
-      return newLoadings;
-    });
-    setTimeout(() => finishLoading(loadingList), 10000);
-  }
-
-  const finishLoading = (loadingList) => 
-      setLoadings(
-          (prevLoadings) => {
-            const newLoadings = [...prevLoadings];
-            for (let i in loadingList)
-              newLoadings[loadingList[i]] = false;
-            return newLoadings;
-          });
-
 
   const handleError = (body) => {
     if (body.code !== 200)
@@ -41,9 +19,8 @@ const App = () => {
       });
   }
 
-
   const addInfo = async (values) => {
-    enterLoading([0,1]);
+    setLoading(true);
     const response = await fetch('/info', {
       method: 'POST',
       headers: {
@@ -58,11 +35,11 @@ const App = () => {
   }
 
   const getAllInfo = async () => {
-    enterLoading([0,1]);
+    setLoading(true);
     const response = await fetch('/info');
     const body = await response.json();
     handleError(body);
-    finishLoading([0,1]);
+    setLoading(false);
     setInfoList(body.data.map(
       (info, index) => {
         info.key = index;
@@ -72,20 +49,21 @@ const App = () => {
     setSelectedKeys([]);
   }
 
+  const deleteInfo = async (index) => {
+    const response = await fetch('/info/' + infoList[index].id, {method: 'DELETE'});
+    const body = await response.json();
+    handleError(body);
+  }
+
   const deleteSelectedInfo = async () => {
-    if (loadings[0]) return;
-    enterLoading([0]);
-    for (let i in selectedKeys) {
-      const response = await fetch('/info/' + infoList[selectedKeys[i]].id, {method: 'DELETE'});
-      const body = await response.json();
-      handleError(body);
-    }
+    setLoading(true);
+    for (let i in selectedKeys)
+      await deleteInfo(selectedKeys[i]);
     getAllInfo();
   }
 
   const clear = async () => {
-    if (loadings[1]) return;
-    enterLoading([1]);
+    setLoading(true);
     const response = await fetch('/info', {method: 'DELETE'});
     const body = await response.json();
     handleError(body);
@@ -113,37 +91,40 @@ const App = () => {
       {context}
       <h1>EARTHQUAKE INFO</h1>
       <Space className='control-panel'>
-        <AddInfoButton
-          disabled={loadings[0] || loadings[1]}
-          addInfo={addInfo}
-        />
+        <AddInfoButton loading={loading} addInfo={addInfo} />
         <InfoUpload
-          disabled={loadings[0] || loadings[1]}
+          loading={loading}
           action='/info/add-from-file'
-          onStart={() => enterLoading([0,1])}
+          onStart={() => setLoading(true)}
           onFinish={getAllInfo}
         />
         <Button
           type='primary'
-          loading={loadings[0]}
+          loading={loading}
           onClick={deleteSelectedInfo}
         >
           Delete Chosen
         </Button>
         <Button
           type='primary'
-          loading={loadings[1]}
+          loading={loading}
           onClick={clear}
         >
           Delete All
         </Button>
       </Space>
       <InfoTable
-        disableModal={loadings[0] || loadings[1]}
+        loading={loading}
         infoList={infoList}
         selectedRowKeys={selectedKeys}
-        onChange={handleSelectChange}
+        onChange={(newKeys) => setSelectedKeys(newKeys)}
         updateInfo={updateInfo}
+        deleteInfo={(index) => {
+          setLoading(true);
+          deleteInfo(index);
+          getAllInfo();
+          setLoading(false);
+        }}
       />
     </div>
   );
