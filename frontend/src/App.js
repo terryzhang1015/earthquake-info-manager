@@ -11,11 +11,16 @@ const App = () => {
   const [loading, setLoading] = useState(false);
   const [msgApi, context] = message.useMessage();
 
-  const handleError = (body) => {
+  const handleError = (body, noShowOk) => {
     if (body.code !== 200)
       return msgApi.open({
         type: 'error',
         content: body.msg + ' errCode: ' + body.code,
+      });
+    if (!noShowOk)
+      return msgApi.open({
+        type: 'success',
+        content: 'Operation Successful',
       });
   }
 
@@ -38,7 +43,7 @@ const App = () => {
     setLoading(true);
     const response = await fetch('/info');
     const body = await response.json();
-    handleError(body);
+    handleError(body, true);
     setLoading(false);
     setInfoList(body.data.map(
       (info, index) => {
@@ -52,7 +57,7 @@ const App = () => {
   const deleteInfo = async (index) => {
     const response = await fetch('/info/' + infoList[index].id, {method: 'DELETE'});
     const body = await response.json();
-    handleError(body);
+    handleError(body, true);
   }
 
   const deleteSelectedInfo = async () => {
