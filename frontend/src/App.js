@@ -1,10 +1,10 @@
 import './styles/App.css';
 import { useEffect, useState } from 'react';
 import { message, Space } from 'antd';
-import { AddInfoButton } from './AddInfoButton';
-import { DeleteButton } from './DeleteButton';
-import { InfoTable } from './InfoTable';
-import { InfoUpload } from './InfoUpload';
+import { AddInfoButton } from './components/AddInfoButton';
+import { DeleteButton } from './components/DeleteButton';
+import { InfoTable } from './components/InfoTable';
+import { InfoUpload } from './components/InfoUpload';
 
 const App = () => {
   const [infoList, setInfoList] = useState([]);

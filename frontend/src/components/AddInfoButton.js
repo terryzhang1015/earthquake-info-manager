@@ -1,6 +1,6 @@
 import { Button } from 'antd';
-import { ModModal } from './ModModal';
 import { useState } from 'react';
+import { ModModal } from './ModModal';
 
 export const AddInfoButton = ({loading, addInfo}) => {
   const [openMod, setOpenMod] = useState(false);
