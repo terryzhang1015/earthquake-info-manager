@@ -1,7 +1,8 @@
 import './styles/App.css';
 import { useEffect, useState } from 'react';
-import { Button, message, Space } from 'antd';
+import { message, Space } from 'antd';
 import { AddInfoButton } from './AddInfoButton';
+import { DeleteButton } from './DeleteButton';
 import { InfoTable } from './InfoTable';
 import { InfoUpload } from './InfoUpload';
 
@@ -62,6 +63,7 @@ const App = () => {
 
   const deleteSelectedInfo = async () => {
     setLoading(true);
+    console.log(selectedKeys);
     for (const i of selectedKeys)
       await deleteInfo(i, true);
     getAllInfo();
@@ -103,12 +105,18 @@ const App = () => {
           onStart={() => setLoading(true)}
           onFinish={getAllInfo}
         />
-        <Button type='primary' loading={loading} onClick={deleteSelectedInfo}>
-          Delete Chosen
-        </Button>
-        <Button type='primary' loading={loading} onClick={clear}>
-          Delete All
-        </Button>
+        <DeleteButton
+          type='primary'
+          buttonText='Delete Selected'
+          loading={loading}
+          deleteInfo={deleteSelectedInfo}
+        />
+        <DeleteButton
+          type='primary'
+          buttonText='Delete All'
+          loading={loading}
+          deleteInfo={clear}
+        />
       </Space>
       <InfoTable
         loading={loading}

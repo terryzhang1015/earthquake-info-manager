@@ -1,5 +1,6 @@
 import { Table, Button, Space } from 'antd';
 import { ModModal } from './ModModal';
+import { DeleteButton } from './DeleteButton';
 import { useState } from 'react';
 
 const cols = [
@@ -36,9 +37,9 @@ export const InfoTable = ({updateInfo, deleteInfo, loading,
             <Button loading={loading} onClick={() => setOpenMod(index)}>
               Modify
             </Button>
-            <Button loading={loading} onClick={() => deleteInfo(index)}>
+            <DeleteButton loading={loading} deleteInfo={() => deleteInfo(index)}>
               Delete
-            </Button>
+            </DeleteButton>
             <ModModal
               open={openMod === index}
               originInfo={info}
