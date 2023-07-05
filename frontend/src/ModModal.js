@@ -7,7 +7,7 @@ const ruleRequired = [{required:true, message:'Cannot be empty'}];
 export const ModModal = ({isAddInfo, updateInfo, originInfo, open, closeModal}) => {
   const [showInfo, setShowInfo] = useState(originInfo);
   const [form] = Form.useForm();
-  //const 
+
   return (
     <Modal
       title='Modify Information'
@@ -24,7 +24,7 @@ export const ModModal = ({isAddInfo, updateInfo, originInfo, open, closeModal}) 
       }}
       onCancel={closeModal}
     >
-      <Form form={form} layout='inline' initialValues={showInfo && {
+      <Form form={form} layout='horizontal' initialValues={showInfo && {
             'time': dayjs(showInfo.time),
             'lat': showInfo.lat,
             'lon': showInfo.lon,
@@ -51,7 +51,7 @@ export const ModModal = ({isAddInfo, updateInfo, originInfo, open, closeModal}) 
           <InputNumber />
         </Form.Item>
         <Form.Item name='position' label='Position'>
-          <Input />
+          <Input.TextArea showCount autoSize maxLength={120} />
         </Form.Item>
       </Form>
     </Modal>
