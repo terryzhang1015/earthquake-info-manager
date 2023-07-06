@@ -1,20 +1,32 @@
-import { Modal, Form, Input, InputNumber, DatePicker } from 'antd';
+import { Modal, Form, Input, InputNumber, DatePicker, Slider, Row, Col } from 'antd';
 import dayjs from 'dayjs';
+import { useState } from 'react';
 
 const ruleRequired = [{required:true, message:'Cannot be empty'}];
 
 export const ModModal = ({isAddInfo, updateInfo, originInfo, open, closeModal}) => {
   const [form] = Form.useForm();
+  const [sliderValue, setSliderValue] = useState(0);
+
+  const handleSliderChange = (newValue) => {
+    setSliderValue(newValue);
+  }
 
   return (
     <Modal
       title='Modify Information'
       okText='Confirm'
       open={open}
-      afterOpenChange={(open) => {if (open) form.resetFields();}}
+      afterOpenChange={(open) => {
+        if (open) {
+          form.resetFields();
+          setSliderValue(originInfo ? originInfo.level : 0);
+        }
+      }}
       onOk={async () => {
         const values = await form.validateFields();
         values.time = values.time.format('YYYY-MM-DD HH:mm:ss');
+        values.level = sliderValue;
         if (!isAddInfo) values.id = originInfo.id;
         updateInfo(values);
         closeModal();
@@ -47,7 +59,24 @@ export const ModModal = ({isAddInfo, updateInfo, originInfo, open, closeModal}) 
           <InputNumber min={0} max={10000000} />
         </Form.Item>
         <Form.Item name='level' label='Level' rules={ruleRequired}>
-          <InputNumber min={0} max={9.9} />
+          <Row>
+            <Col span={16}>
+              <Slider
+                min={0} max={9.9} step={.1}
+                value={
+                  typeof sliderValue==='number' ? sliderValue>=0 && sliderValue<=9.9
+                    ? sliderValue : (sliderValue < 0 ? 0 : 9.9) : 0
+                }
+                onChange={handleSliderChange}
+              />
+            </Col>
+            <Col span={5}>
+              <InputNumber
+                min={0} max={9.9} value={sliderValue}
+                onChange={handleSliderChange}
+              />
+            </Col>
+          </Row>
         </Form.Item>
         <Form.Item name='position' label='Position'>
           <Input.TextArea showCount autoSize maxLength={120} />

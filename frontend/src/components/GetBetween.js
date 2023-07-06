@@ -6,6 +6,9 @@ export const GetBetweenButton = ({key}) => {
       <Button type='primary'>
         Get Info Between {key}
       </Button>
+      <Button type='primary'>
+        Get Info Between {key}
+      </Button>
     </Space>
   );
 }
