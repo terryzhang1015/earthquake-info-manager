@@ -1,6 +1,6 @@
 import { Table, Button, Space } from 'antd';
-import { ModModal } from './ModModal';
-import { DeleteButton } from './DeleteButton';
+import { ModModal } from './widgets/ModModal';
+import { DeleteButton } from './widgets/DeleteButton';
 import { useState } from 'react';
 
 const cols = [
