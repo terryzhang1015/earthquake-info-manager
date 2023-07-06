@@ -14,5 +14,5 @@ public interface InfoMapper {
     Info getInfoById(int id);
     int deleteInfo(int id);
     int updateInfo(Info info);
-    int clear();
+    int clear(String st, String ed, String d1, String d2);
 }

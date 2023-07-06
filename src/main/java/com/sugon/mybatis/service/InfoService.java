@@ -46,5 +46,7 @@ public class InfoService {
     public Info getInfoById(int id) { return infoMapper.getInfoById(id); }
     public int updateInfo(Info info) { return infoMapper.updateInfo(info); }
     public int delete(int id) { return infoMapper.deleteInfo(id); }
-    public int clear() { return infoMapper.clear(); }
+    public int clear(String st, String ed, String d1, String d2) {
+        return infoMapper.clear(st, ed, d1, d2);
+    }
 }

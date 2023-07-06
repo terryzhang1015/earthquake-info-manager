@@ -32,7 +32,8 @@
         SELECT * FROM info.nature_monitor_earthquakeinfo WHERE Id = #{id}
     </select>
 
-    <delete id="clear">
-        TRUNCATE TABLE info.nature_monitor_earthquakeinfo
+    <delete id="clear" parameterType="String">
+        DELETE FROM info.nature_monitor_earthquakeinfo WHERE
+        Time BETWEEN #{st} AND #{ed} AND Level BETWEEN #{d1} AND #{d2}
     </delete>
 </mapper>
