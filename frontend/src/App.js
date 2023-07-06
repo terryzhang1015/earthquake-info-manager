@@ -55,7 +55,6 @@ const App = () => {
         (timeFilter ? timeFilter[0] : '') + '&ed=' +
         (timeFilter ? timeFilter[1] : '') + '&d1=' +
         levelFilter[0] + '&d2=' + levelFilter[1];
-    console.log(infoUrl);
     const response = await fetch(infoUrl);
     const body = await response.json();
     handleError(body, true);
@@ -72,7 +71,6 @@ const App = () => {
   const getAllInfo = async () => {
     setLoading(true);
     const infoUrl = '/info/filter';
-    console.log(infoUrl);
     const response = await fetch(infoUrl);
     const body = await response.json();
     handleError(body, true);
@@ -101,7 +99,11 @@ const App = () => {
 
   const clear = async () => {
     setLoading(true);
-    const response = await fetch('/info', {method: 'DELETE'});
+    const infoUrl = '/info/filter?st=' +
+        (timeFilter ? timeFilter[0] : '') + '&ed=' +
+        (timeFilter ? timeFilter[1] : '') + '&d1=' +
+        levelFilter[0] + '&d2=' + levelFilter[1];
+    const response = await fetch(infoUrl, {method: 'DELETE'});
     const body = await response.json();
     handleError(body);
     getFilteredInfo();

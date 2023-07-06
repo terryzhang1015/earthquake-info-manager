@@ -23,10 +23,10 @@ export const GetBetween = ({timeFilter, levelFilter, setTimeFilter, setLevelFilt
         <center>
           <Space>
             <Button onClick={refresh}>
-              Confirm
+              Select
             </Button>
             <Button danger onClick={reset}>
-              Clear
+              Reset
             </Button>
           </Space>
         </center>
