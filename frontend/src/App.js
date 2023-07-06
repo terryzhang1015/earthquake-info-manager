@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import { message, Space } from 'antd';
 import { AddInfoButton } from './components/AddInfoButton';
 import { DeleteButton } from './components/DeleteButton';
+import { GetBetweenButton } from './components/GetBetweenButton';
 import { InfoTable } from './components/InfoTable';
 import { InfoUpload } from './components/InfoUpload';
 

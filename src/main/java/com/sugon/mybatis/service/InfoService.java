@@ -40,11 +40,8 @@ public class InfoService {
     }
 
     public List<Info> getAllInfo() { return infoMapper.getAllInfo(); }
-    public List<Info> getInfoBetweenTimes(String st, String ed) {
-        return infoMapper.getInfoBetweenTimes(st, ed);
-    }
-    public List<Info> getInfoBetweenLevels(int d1, int d2) {
-        return infoMapper.getInfoBetweenLevels(d1, d2);
+    public List<Info> getFilteredInfo(String st, String ed, String d1, String d2) {
+        return infoMapper.getFilteredInfo(st, ed, d1, d2);
     }
     public Info getInfoById(int id) { return infoMapper.getInfoById(id); }
     public int updateInfo(Info info) { return infoMapper.updateInfo(info); }

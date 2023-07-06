@@ -49,16 +49,14 @@ public class InfoController {
         return Response.success(infoService.getInfoById(id));
     }
 
-    @GetMapping("/time")
-    public Response getInfoBetweenTimes(@RequestParam(name = "st") String st,
-            @RequestParam(name = "ed") String ed) throws Exception {
-        return Response.success(infoService.getInfoBetweenTimes(st, ed));
-    }
-
-    @GetMapping("/level")
-    public Response getInfoBetweenLevels(@RequestParam(name = "d1") int d1,
-            @RequestParam(name = "d2") int d2) throws Exception {
-        return Response.success(infoService.getInfoBetweenLevels(d1, d2));
+    @GetMapping("/filter")
+    public Response getFilteredInfo(
+                @RequestParam(name = "st", defaultValue = "1000-01-01 00:00:00") String st,
+                @RequestParam(name = "ed", defaultValue = "9999-12-31 23:59:59") String ed,
+                @RequestParam(name = "d1", defaultValue = "0") String d1,
+                @RequestParam(name = "d2", defaultValue = "11") String d2
+            ) throws Exception {
+        return Response.success(infoService.getFilteredInfo(st, ed, d1, d2));
     }
 
     @PutMapping
