@@ -25,7 +25,7 @@
     <select id="getFilteredInfo" parameterType="String" resultType="Info">
         SELECT * FROM info.nature_monitor_earthquakeinfo WHERE
         Time BETWEEN #{st} AND #{ed} AND Level BETWEEN #{d1} AND #{d2}
-        ORDER BY Id ASC
+        ORDER BY ${key} ASC
     </select>
 
     <select id="getInfoById" parameterType="int" resultType="Info">
