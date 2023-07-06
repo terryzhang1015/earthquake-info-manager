@@ -4,21 +4,29 @@ import { message, Space } from 'antd';
 import { AddInfoButton } from './components/widgets/AddInfoButton';
 import { DeleteButton } from './components/widgets/DeleteButton';
 import { InfoUpload } from './components/widgets/InfoUpload';
+import { SortDropdown } from './components/widgets/SortDropdown';
 import { InfoTable } from './components/InfoTable';
 import { GetBetween } from './components/GetBetween';
 
 const App = () => {
   const [timeFilter, setTimeFilter] = useState();
   const [levelFilter, setLevelFilter] = useState([0, 9.9]);
+  const [sortKey, setSortKey] = useState(0);
   const [infoList, setInfoList] = useState([]);
   const [selectedKeys, setSelectedKeys] = useState([]);
   const [loading, setLoading] = useState(false);
   const [msgApi, context] = message.useMessage();
 
+  const getUrl = (sort) => '/info/filter?st=' +
+      (timeFilter ? timeFilter[0] : '') + '&ed=' +
+      (timeFilter ? timeFilter[1] : '') +
+      '&d1=' + levelFilter[0] +
+      '&d2=' + levelFilter[1] +
+      (sort ? '&key='+ sortKey : '');
+
   const resetFilter = () => {
     setTimeFilter();
     setLevelFilter([0, 9.9]);
-    getAllInfo();
   }
 
   const handleError = (body, noShowOk) => {
@@ -51,10 +59,7 @@ const App = () => {
 
   const getFilteredInfo = async () => {
     setLoading(true);
-    const infoUrl = '/info/filter?st=' +
-        (timeFilter ? timeFilter[0] : '') + '&ed=' +
-        (timeFilter ? timeFilter[1] : '') + '&d1=' +
-        levelFilter[0] + '&d2=' + levelFilter[1];
+    const infoUrl = getUrl(true);
     const response = await fetch(infoUrl);
     const body = await response.json();
     handleError(body, true);
@@ -99,10 +104,7 @@ const App = () => {
 
   const clear = async () => {
     setLoading(true);
-    const infoUrl = '/info/filter?st=' +
-        (timeFilter ? timeFilter[0] : '') + '&ed=' +
-        (timeFilter ? timeFilter[1] : '') + '&d1=' +
-        levelFilter[0] + '&d2=' + levelFilter[1];
+    const infoUrl = getUrl();
     const response = await fetch(infoUrl, {method: 'DELETE'});
     const body = await response.json();
     handleError(body);
@@ -124,12 +126,13 @@ const App = () => {
   }
 
 
-  useEffect(() => {getFilteredInfo();}, []);
+  useEffect(() => {getFilteredInfo();}, [sortKey, timeFilter, levelFilter]);
   return (
     <div>
       {context}
       <h1>EARTHQUAKE INFO</h1>
       <Space className='control-panel'>
+        <SortDropdown onClick={(key) => {setSortKey(key.key);}} />
         <AddInfoButton loading={loading} addInfo={addInfo} />
         <InfoUpload
           loading={loading}
@@ -155,8 +158,7 @@ const App = () => {
         levelFilter={levelFilter}
         setTimeFilter={setTimeFilter}
         setLevelFilter={setLevelFilter}
-        reset={resetFilter}
-        refresh={getFilteredInfo}
+        resetFilter={resetFilter}
       />
       <InfoTable
         loading={loading}
