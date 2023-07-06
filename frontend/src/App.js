@@ -5,12 +5,21 @@ import { AddInfoButton } from './components/widgets/AddInfoButton';
 import { DeleteButton } from './components/widgets/DeleteButton';
 import { InfoUpload } from './components/widgets/InfoUpload';
 import { InfoTable } from './components/InfoTable';
+import { GetBetween } from './components/GetBetween';
 
 const App = () => {
+  const [timeFilter, setTimeFilter] = useState();
+  const [levelFilter, setLevelFilter] = useState([0, 9.9]);
   const [infoList, setInfoList] = useState([]);
   const [selectedKeys, setSelectedKeys] = useState([]);
   const [loading, setLoading] = useState(false);
   const [msgApi, context] = message.useMessage();
+
+  const resetFilter = () => {
+    setTimeFilter();
+    setLevelFilter([0, 9.9]);
+    getAllInfo();
+  }
 
   const handleError = (body, noShowOk) => {
     if (body.code !== 200)
@@ -37,12 +46,34 @@ const App = () => {
     });
     const body = await response.json();
     handleError(body);
-    getAllInfo();
+    getFilteredInfo();
+  }
+
+  const getFilteredInfo = async () => {
+    setLoading(true);
+    const infoUrl = '/info/filter?st=' +
+        (timeFilter ? timeFilter[0] : '') + '&ed=' +
+        (timeFilter ? timeFilter[1] : '') + '&d1=' +
+        levelFilter[0] + '&d2=' + levelFilter[1];
+    console.log(infoUrl);
+    const response = await fetch(infoUrl);
+    const body = await response.json();
+    handleError(body, true);
+    setLoading(false);
+    setInfoList(body.data.map(
+      (info, index) => {
+        info.key = index;
+        return info;
+      },
+    ));
+    setSelectedKeys([]);
   }
 
   const getAllInfo = async () => {
     setLoading(true);
-    const response = await fetch('/info');
+    const infoUrl = '/info/filter';
+    console.log(infoUrl);
+    const response = await fetch(infoUrl);
     const body = await response.json();
     handleError(body, true);
     setLoading(false);
@@ -65,7 +96,7 @@ const App = () => {
     setLoading(true);
     for (const i of selectedKeys)
       await deleteInfo(i, true);
-    getAllInfo();
+    getFilteredInfo();
   }
 
   const clear = async () => {
@@ -73,7 +104,7 @@ const App = () => {
     const response = await fetch('/info', {method: 'DELETE'});
     const body = await response.json();
     handleError(body);
-    getAllInfo();
+    getFilteredInfo();
   }
 
   const updateInfo = async (values) => {
@@ -87,11 +118,11 @@ const App = () => {
     });
     const body = await response.json();
     handleError(body);
-    getAllInfo();
+    getFilteredInfo();
   }
 
 
-  useEffect(() => {getAllInfo();}, []);
+  useEffect(() => {getFilteredInfo();}, []);
   return (
     <div>
       {context}
@@ -102,7 +133,7 @@ const App = () => {
           loading={loading}
           action='/info/add-from-file'
           onStart={() => setLoading(true)}
-          onFinish={getAllInfo}
+          onFinish={getFilteredInfo}
         />
         <DeleteButton
           type='primary'
@@ -117,6 +148,14 @@ const App = () => {
           deleteInfo={clear}
         />
       </Space>
+      <GetBetween
+        timeFilter={timeFilter}
+        levelFilter={levelFilter}
+        setTimeFilter={setTimeFilter}
+        setLevelFilter={setLevelFilter}
+        reset={resetFilter}
+        refresh={getFilteredInfo}
+      />
       <InfoTable
         loading={loading}
         infoList={infoList}
@@ -126,7 +165,7 @@ const App = () => {
         deleteInfo={async (index) => {
           setLoading(true);
           await deleteInfo(index);
-          getAllInfo();
+          getFilteredInfo();
           setLoading(false);
         }}
       />
