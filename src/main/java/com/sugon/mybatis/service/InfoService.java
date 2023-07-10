@@ -12,7 +12,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.sugon.mybatis.entity.Info;
 import com.sugon.mybatis.entity.XLSXHandler;
-import com.sugon.mybatis.exception.InfoNotFoundException;
+import com.sugon.mybatis.exception.InfoIdInvalidException;
 import com.sugon.mybatis.exception.ParamFormatException;
 import com.sugon.mybatis.mapper.InfoMapper;
 
@@ -60,13 +60,16 @@ public class InfoService {
     @Value("${paths.temp-path}") // CANNOT use 'new' to create InfoService objects
     private String path;
 
-    public int addInfo(Info info) throws ParamFormatException {
+    public int addInfo(Info info) throws ParamFormatException, InfoIdInvalidException {
         validateInfo(info);
+        if (infoMapper.countId(info.getId()) > 0)
+            throw new InfoIdInvalidException(info.getId());
         return infoMapper.addInfo(info);
     }
 
     public int addInfoFromFile(MultipartFile file) throws
-            IOException, InvalidFormatException, ParamFormatException {
+            IOException, InvalidFormatException,
+            ParamFormatException, InfoIdInvalidException {
         File temp = new File(path);
         if (!temp.exists()) temp.mkdirs();
         File localFile = new File(temp.getAbsolutePath() + file.getOriginalFilename());
@@ -90,18 +93,20 @@ public class InfoService {
             return infoMapper.getFilteredInfo(st, ed, d1, d2, "Level");
         return infoMapper.getFilteredInfo(st, ed, d1, d2, "Id");
     }
-    public Info getInfoById(int id) throws InfoNotFoundException {
+    public Info getInfoById(int id) throws InfoIdInvalidException {
         Info ret = infoMapper.getInfoById(id);
-        if (ret == null) throw new InfoNotFoundException(id);
+        if (ret == null) throw new InfoIdInvalidException(id);
         return ret;
     }
-    public int updateInfo(Info info) throws ParamFormatException, InfoNotFoundException {
+    public int updateInfo(Info info) throws ParamFormatException, InfoIdInvalidException {
         validateInfo(info);
-        if (infoMapper.updateInfo(info) != 1) throw new InfoNotFoundException(info.getId());
+        if (infoMapper.updateInfo(info) != 1)
+            throw new InfoIdInvalidException(info.getId());
         return 1;
     }
-    public int deleteInfoById(int id) throws InfoNotFoundException {
-        if (infoMapper.deleteInfoById(id) != 1) throw new InfoNotFoundException(id);
+    public int deleteInfoById(int id) throws InfoIdInvalidException {
+        if (infoMapper.deleteInfoById(id) != 1)
+            throw new InfoIdInvalidException(id);
         return 1;
     }
     public int clear(String st, String ed, String d1, String d2)

@@ -32,6 +32,11 @@
         SELECT * FROM info.nature_monitor_earthquakeinfo WHERE Id = #{id}
     </select>
 
+    <select id="countId" parameterType="int" resultType="int">
+        SELECT COUNT(CASE WHEN Id = #{id} THEN 1 END)
+        FROM info.nature_monitor_earthquakeinfo
+    </select>
+
     <delete id="clear" parameterType="String">
         DELETE FROM info.nature_monitor_earthquakeinfo WHERE
         Time BETWEEN #{st} AND #{ed} AND Level BETWEEN #{d1} AND #{d2}
