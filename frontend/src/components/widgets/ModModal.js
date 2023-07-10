@@ -5,7 +5,7 @@ import { LevelSlider } from './LevelSlider';
 
 const ruleRequired = [{required:true, message:'Cannot be empty'}];
 
-export const ModModal = ({isAddInfo, defaultSliderValue, updateInfo, originInfo, open, closeModal}) => {
+export const ModModal = ({isAddInfo, updateInfo, originInfo, open, closeModal}) => {
   const [form] = Form.useForm();
   const [sliderValue, setSliderValue] = useState(0);
   const [msgApi, context] = message.useMessage();
@@ -30,23 +30,22 @@ export const ModModal = ({isAddInfo, defaultSliderValue, updateInfo, originInfo,
           });
         }
       }}
-      onOk={async () => {
-        try {
-          const values = await form.validateFields();
+      onOk={() => {
+        form.validateFields().then((values) => {
           values.time = values.time.format('YYYY-MM-DD HH:mm:ss');
           values.level = sliderValue;
           // const regex = /\d+/;
           // if (!regex.test(values.level))
             // throw Error('Level not number');
           if (!isAddInfo) values.id = originInfo.id;
-          await updateInfo(values);
           closeModal();
-        } catch {
+          updateInfo(values);
+        }).catch(() => {
           msgApi.open({
             type: 'error',
-            content: 'Please fill all the required information in the correct format'
+            content: 'Please fill all the required information in the correct format',
           });
-        }
+        });
       }}
       onCancel={closeModal}
     >
@@ -77,7 +76,6 @@ export const ModModal = ({isAddInfo, defaultSliderValue, updateInfo, originInfo,
         </Form.Item>
         <Form.Item label='Level' rules={ruleRequired}>
           <LevelSlider
-            defaultValue={defaultSliderValue ? defaultSliderValue : 0}
             value={sliderValue}
             onChange={setSliderValue}
           />

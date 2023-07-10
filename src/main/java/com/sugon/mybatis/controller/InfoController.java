@@ -14,6 +14,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.sugon.mybatis.entity.Info;
 import com.sugon.mybatis.entity.Response;
+import com.sugon.mybatis.exception.InfoNotFoundException;
+import com.sugon.mybatis.exception.ParamFormatException;
 import com.sugon.mybatis.service.InfoService;
 
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -29,13 +31,14 @@ public class InfoController {
     InfoService infoService;
 
     @PostMapping
-    public Response addInfo(@RequestBody Info info) throws Exception {
+    public Response addInfo(@RequestBody Info info) throws
+            ParamFormatException, Exception {
         return Response.success(infoService.addInfo(info));
     }
 
     @PostMapping("/add-from-file")
     public Response addListofInfo(@RequestBody MultipartFile file) throws
-            IOException, InvalidFormatException, Exception {
+            IOException, InvalidFormatException, ParamFormatException, Exception {
         return Response.success(infoService.addInfoFromFile(file));
     }
 
@@ -45,7 +48,7 @@ public class InfoController {
     }
 
     @GetMapping("/{id}")
-    public Response getInfoById(@PathVariable int id) throws Exception {
+    public Response getInfoById(@PathVariable int id) throws InfoNotFoundException, Exception {
         return Response.success(infoService.getInfoById(id));
     }
 
@@ -56,18 +59,20 @@ public class InfoController {
                 @RequestParam(name = "d1", defaultValue = "0") String d1,
                 @RequestParam(name = "d2", defaultValue = "11") String d2,
                 @RequestParam(name = "key", defaultValue = "0") String key
-            ) throws Exception {
+            ) throws ParamFormatException, Exception {
         return Response.success(infoService.getFilteredInfo(st, ed, d1, d2, key));
     }
 
     @PutMapping
-    public Response updateInfo(@RequestBody Info info) throws Exception {
+    public Response updateInfo(@RequestBody Info info)
+            throws ParamFormatException, InfoNotFoundException, Exception {
         return Response.success(infoService.updateInfo(info));
     }
 
     @DeleteMapping("/{id}")
-    public Response deleteInfo(@PathVariable int id) throws Exception {
-        return Response.success(infoService.delete(id));
+    public Response deleteInfoById(@PathVariable int id)
+            throws Exception {
+        return Response.success(infoService.deleteInfoById(id));
     }
 
     @DeleteMapping("/filter")
@@ -76,7 +81,7 @@ public class InfoController {
         @RequestParam(name = "ed", defaultValue = "9999-12-31 23:59:59") String ed,
         @RequestParam(name = "d1", defaultValue = "0") String d1,
         @RequestParam(name = "d2", defaultValue = "11") String d2
-    ) throws Exception {
+    ) throws ParamFormatException, Exception {
         return Response.success(infoService.clear(st, ed, d1, d2));
     }
 }

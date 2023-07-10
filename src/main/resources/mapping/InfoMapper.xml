@@ -7,8 +7,8 @@
         (#{id}, #{time}, #{lat}, #{lon}, #{deep}, #{level}, #{position})
     </insert>
 
-    <delete id="deleteInfo" parameterType="int">
-        DELETE FROM info.nature_monitor_earthquakeinfo WHERE Id = #{id};
+    <delete id="deleteInfoById" parameterType="int">
+        DELETE FROM info.nature_monitor_earthquakeinfo WHERE Id = #{id}
     </delete>
 
     <update id="updateInfo" parameterType="Info">
