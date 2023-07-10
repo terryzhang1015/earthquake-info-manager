@@ -14,7 +14,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.sugon.mybatis.entity.Info;
 import com.sugon.mybatis.entity.Response;
-import com.sugon.mybatis.exception.InfoNotFoundException;
+import com.sugon.mybatis.exception.InfoIdInvalidException;
 import com.sugon.mybatis.exception.ParamFormatException;
 import com.sugon.mybatis.service.InfoService;
 
@@ -32,13 +32,14 @@ public class InfoController {
 
     @PostMapping
     public Response addInfo(@RequestBody Info info) throws
-            ParamFormatException, Exception {
+            ParamFormatException, InfoIdInvalidException, Exception {
         return Response.success(infoService.addInfo(info));
     }
 
     @PostMapping("/add-from-file")
     public Response addListofInfo(@RequestBody MultipartFile file) throws
-            IOException, InvalidFormatException, ParamFormatException, Exception {
+            IOException, InvalidFormatException,
+            ParamFormatException, InfoIdInvalidException, Exception {
         return Response.success(infoService.addInfoFromFile(file));
     }
 
@@ -48,7 +49,7 @@ public class InfoController {
     }
 
     @GetMapping("/{id}")
-    public Response getInfoById(@PathVariable int id) throws InfoNotFoundException, Exception {
+    public Response getInfoById(@PathVariable int id) throws InfoIdInvalidException, Exception {
         return Response.success(infoService.getInfoById(id));
     }
 
@@ -65,7 +66,7 @@ public class InfoController {
 
     @PutMapping
     public Response updateInfo(@RequestBody Info info)
-            throws ParamFormatException, InfoNotFoundException, Exception {
+            throws ParamFormatException, InfoIdInvalidException, Exception {
         return Response.success(infoService.updateInfo(info));
     }
 

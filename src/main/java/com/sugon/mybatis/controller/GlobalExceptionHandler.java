@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.sugon.mybatis.entity.Response;
-import com.sugon.mybatis.exception.InfoNotFoundException;
+import com.sugon.mybatis.exception.InfoIdInvalidException;
 import com.sugon.mybatis.exception.ParamFormatException;
 
 @ControllerAdvice
@@ -20,11 +20,11 @@ public class GlobalExceptionHandler {
             500, "server error: invalid param: " + e.getMessage());
     }
 
-    @ExceptionHandler(InfoNotFoundException.class)
+    @ExceptionHandler(InfoIdInvalidException.class)
     @ResponseBody
-    public Response infoNotFoundExceptionResponse(InfoNotFoundException e) {
+    public Response infoNotFoundExceptionResponse(InfoIdInvalidException e) {
         return Response.failure(
-            500, "server error: info not found: " + e.getMessage());
+            500, "server error: info id invalid: " + e.getMessage());
     }
 
     @ExceptionHandler(IOException.class)

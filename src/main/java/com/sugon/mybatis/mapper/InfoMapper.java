@@ -12,6 +12,7 @@ public interface InfoMapper {
     List<Info> getAllInfo();
     List<Info> getFilteredInfo(String st, String ed, String d1, String d2, String key);
     Info getInfoById(int id);
+    int countId(int id);
     int deleteInfoById(int id);
     int updateInfo(Info info);
     int clear(String st, String ed, String d1, String d2);
