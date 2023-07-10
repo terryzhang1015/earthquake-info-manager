@@ -1,6 +1,6 @@
 import { Row, Col, Slider, InputNumber } from 'antd';
 
-export const LevelSlider = ({range, value, onChange}) => {
+export const LevelSlider = ({range, value, defaultValue, onChange}) => {
   return (
     <Row>
       <Col flex={5}>
@@ -10,6 +10,7 @@ export const LevelSlider = ({range, value, onChange}) => {
             range ? value : typeof value==='number' ? value>=0 && value<=9.9
               ? value : (value < 0 ? 0 : 9.9) : 0
           }
+          defaultValue={defaultValue}
           onChange={onChange}
         />
       </Col>
@@ -17,7 +18,7 @@ export const LevelSlider = ({range, value, onChange}) => {
         !range && <Col flex={1}>
           <center>
             <InputNumber
-              min={0} max={9.9} value={value}
+              min={0} max={9.9} value={value} defaultValue={defaultValue}
               onChange={onChange}
             />
           </center>

@@ -16,6 +16,7 @@ export const AddInfoButton = ({loading, addInfo}) => {
       </Button>
       <ModModal
         isAddInfo
+        defaultSliderValue={0}
         open={openMod}
         closeModal={() => setOpenMod(false)}
         updateInfo={addInfo}
