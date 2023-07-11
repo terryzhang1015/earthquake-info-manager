@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sugon.mybatis.mapper.CheckpointMapper">
+    <insert id="addPoint" parameterType="Checkpoint">
+        INSERT INTO info.checkpoint (Lat, Lon, Position) VALUES
+        (#{lat}, #{lon}, #{position})
+    </insert>
+
+    <select id="getAllPoints" resultType="Checkpoint">
+        SELECT * FROM info.checkpoint ORDER BY Id ASC
+    </select>
+
+    <select id="getAllDangerPoints" resultType="Checkpoint">
+        SELECT x.* FROM info.checkpoint x, (
+            SELECT a.Id FROM info.checkpoint a, info.nature_monitor_earthquakeinfo b
+            WHERE (a.Lat-b.Lat) * (a.Lat-b.Lat) + (a.Lon-b.Lon) * (a.Lon-b.Lon) &lt; 5
+            GROUP BY a.Id
+        ) y WHERE x.Id = y.Id ORDER BY x.Id ASC
+    </select>
+
+    <select id="getClosestInfo" parameterType="int" resultType="Info">
+        SELECT res.Id, res.Time, res.Lat, res.Lon, res.Deep, res.Level, res.Position FROM (
+            SELECT *, FIRST_VALUE(t.dis) OVER (ORDER BY t.dis) FROM (
+                SELECT b.*,
+                (a.Lat-b.Lat) * (a.Lat-b.Lat) + (a.Lon-b.Lon) * (a.Lon-b.Lon) dis
+                FROM (SELECT Lat, Lon from info.checkpoint WHERE Id = #{id}) a,
+                info.nature_monitor_earthquakeinfo b GROUP BY b.Id
+            ) t LIMIT 1
+        ) res;
+    </select>
+
+    <select id="countId" parameterType="int" resultType="int">
+        SELECT COUNT(CASE WHEN Id = #{id} THEN 1 END) FROM info.checkpoint
+    </select>
+
+    <update id = "updatePoint" parameterType="Checkpoint">
+        UPDATE info.checkpoint SET Lat = #{lat}, Lon = #{lon}, Position = #{position}
+        WHERE Id = #{id}
+    </update>
+
+    <delete id = "deletePointById" parameterType="int">
+        DELETE FROM info.checkpoint WHERE Id = #{id}
+    </delete>
+
+    <delete id = "clear">
+        TRUNCATE TABLE info.checkpoint
+    </delete>
+</mapper>

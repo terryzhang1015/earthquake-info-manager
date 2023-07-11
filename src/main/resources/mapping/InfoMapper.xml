@@ -32,6 +32,16 @@
         SELECT * FROM info.nature_monitor_earthquakeinfo WHERE Id = #{id}
     </select>
 
+    <select id="getDangerPointsById" parameterType="int" resultType="Checkpoint">
+        SELECT x.* FROM info.checkpoint x, (
+            SELECT a.Id, (a.Lat-b.Lat) * (a.Lat-b.Lat) + (a.Lon-b.Lon) * (a.Lon-b.Lon) k
+            FROM info.checkpoint a, (
+                SELECT Lat, Lon FROM info.nature_monitor_earthquakeinfo WHERE Id = #{id}
+            ) b WHERE (a.Lat-b.Lat) * (a.Lat-b.Lat) + (a.Lon-b.Lon) * (a.Lon-b.Lon) &lt; 5
+            GROUP BY a.Id
+        ) y WHERE x.Id = y.Id ORDER BY y.k ASC
+    </select>
+
     <select id="countId" parameterType="int" resultType="int">
         SELECT COUNT(CASE WHEN Id = #{id} THEN 1 END)
         FROM info.nature_monitor_earthquakeinfo

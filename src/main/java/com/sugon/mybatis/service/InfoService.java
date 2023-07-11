@@ -10,9 +10,10 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.sugon.mybatis.entity.Checkpoint;
 import com.sugon.mybatis.entity.Info;
 import com.sugon.mybatis.entity.XLSXHandler;
-import com.sugon.mybatis.exception.InfoIdInvalidException;
+import com.sugon.mybatis.exception.IdInvalidException;
 import com.sugon.mybatis.exception.ParamFormatException;
 import com.sugon.mybatis.mapper.InfoMapper;
 
@@ -43,15 +44,15 @@ public class InfoService {
 
     private void validateInfo(Info info) throws ParamFormatException {
         if (!checkTime(info.getTime()))
-            throw new ParamFormatException("time");
-        if (info.getLat() - eps > 90)
-            throw new ParamFormatException("lat");
-        if (info.getLon() - eps > 180)
-            throw new ParamFormatException("lon");
+            throw new ParamFormatException("Info.time");
+        if (Math.abs(info.getLat()) - eps > 90)
+            throw new ParamFormatException("Info.lat");
+        if (Math.abs(info.getLon()) - eps > 180)
+            throw new ParamFormatException("Info.lon");
         if (info.getLevel() + eps < 0 || info.getLevel() - eps > 9.9)
-            throw new ParamFormatException("level");
-        if (info.getPosition().length() > 120)
-            throw new ParamFormatException("position");
+            throw new ParamFormatException("Info.level");
+        if (info.getPosition() != null && info.getPosition().length() > 120)
+            throw new ParamFormatException("Info.position");
     }
 
     @Autowired
@@ -60,16 +61,16 @@ public class InfoService {
     @Value("${paths.temp-path}") // CANNOT use 'new' to create InfoService objects
     private String path;
 
-    public int addInfo(Info info) throws ParamFormatException, InfoIdInvalidException {
+    public int addInfo(Info info) throws ParamFormatException, IdInvalidException {
         validateInfo(info);
         if (infoMapper.countId(info.getId()) > 0)
-            throw new InfoIdInvalidException(info.getId());
+            throw new IdInvalidException(info.getId());
         return infoMapper.addInfo(info);
     }
 
     public int addInfoFromFile(MultipartFile file) throws
             IOException, InvalidFormatException,
-            ParamFormatException, InfoIdInvalidException {
+            ParamFormatException, IdInvalidException {
         File temp = new File(path);
         if (!temp.exists()) temp.mkdirs();
         File localFile = new File(temp.getAbsolutePath() + file.getOriginalFilename());
@@ -84,6 +85,7 @@ public class InfoService {
     }
 
     public List<Info> getAllInfo() { return infoMapper.getAllInfo(); }
+
     public List<Info> getFilteredInfo(String st, String ed, String d1,
             String d2, String key) throws ParamFormatException {
         validateFilter(st, ed, d1, d2);
@@ -93,22 +95,32 @@ public class InfoService {
             return infoMapper.getFilteredInfo(st, ed, d1, d2, "Level");
         return infoMapper.getFilteredInfo(st, ed, d1, d2, "Id");
     }
-    public Info getInfoById(int id) throws InfoIdInvalidException {
+
+    public Info getInfoById(int id) throws IdInvalidException {
         Info ret = infoMapper.getInfoById(id);
-        if (ret == null) throw new InfoIdInvalidException(id);
+        if (ret == null) throw new IdInvalidException(id);
         return ret;
     }
-    public int updateInfo(Info info) throws ParamFormatException, InfoIdInvalidException {
+
+    public List<Checkpoint> getDangerPointsById(int id) throws IdInvalidException {
+        if (infoMapper.countId(id) != 1)
+            throw new IdInvalidException(id);
+        return infoMapper.getDangerPointsById(id);
+    }
+
+    public int updateInfo(Info info) throws ParamFormatException, IdInvalidException {
         validateInfo(info);
         if (infoMapper.updateInfo(info) != 1)
-            throw new InfoIdInvalidException(info.getId());
+            throw new IdInvalidException(info.getId());
         return 1;
     }
-    public int deleteInfoById(int id) throws InfoIdInvalidException {
+
+    public int deleteInfoById(int id) throws IdInvalidException {
         if (infoMapper.deleteInfoById(id) != 1)
-            throw new InfoIdInvalidException(id);
+            throw new IdInvalidException(id);
         return 1;
     }
+
     public int clear(String st, String ed, String d1, String d2)
             throws ParamFormatException {
         validateFilter(st, ed, d1, d2);

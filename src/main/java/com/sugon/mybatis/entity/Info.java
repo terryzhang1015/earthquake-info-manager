@@ -17,6 +17,6 @@ public class Info {
         this.id = id; this.time = new String(time);
         this.lat = lat; this.lon = lon;
         this.deep = deep; this.level = level;
-        this.position = new String(position);
+        this.position = position != null ? new String(position) : null;
     }
 }
