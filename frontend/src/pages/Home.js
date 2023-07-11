@@ -1,4 +1,4 @@
-import '../styles/App.css';
+import '../styles/Home.css';
 import { useEffect, useState } from 'react';
 import { message, Space } from 'antd';
 import { AddInfoButton } from '../components/widgets/AddInfoButton';
@@ -8,7 +8,7 @@ import { SortDropdown } from '../components/widgets/SortDropdown';
 import { InfoTable } from '../components/InfoTable';
 import { GetBetween } from '../components/GetBetween';
 
-const App = () => {
+export const Home = () => {
   const [timeFilter, setTimeFilter] = useState();
   const [levelFilter, setLevelFilter] = useState([0, 9.9]);
   const [sortKey, setSortKey] = useState(0);
@@ -160,5 +160,3 @@ const App = () => {
     </div>
   );
 }
-
-export default App;
