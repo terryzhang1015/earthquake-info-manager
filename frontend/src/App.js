@@ -1,17 +1,23 @@
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { RouterProvider, createBrowserRouter } from 'react-router-dom';
 import { Home } from './pages/Home';
 import { CheckpointPage } from './pages/CheckpointPage';
-import { NotFound } from './pages/NotFound';
+import { ErrorPage } from './pages/ErrorPage';
+
+const router = createBrowserRouter([
+  {
+    path: '/',
+    element: <Home />,
+    errorElement: <ErrorPage />,
+  },
+  {
+    path: '/pointview',
+    element: <CheckpointPage />,
+  },
+]);
 
 const App = () => {
   return (
-    <BrowserRouter>
-      <Routes>
-        <Route path='/' element={<Home />} />
-        <Route path='/point' element={<CheckpointPage />} />
-        <Route path='*' element={<NotFound />} />
-      </Routes>
-    </BrowserRouter>
+    <RouterProvider router={router}/>
   );
 }
 

@@ -1,14 +1,17 @@
 import '../styles/Home.css';
 import { useEffect, useState } from 'react';
-import { message, Space } from 'antd';
+import { message, Space, Button, Modal } from 'antd';
 import { AddInfoButton } from '../components/widgets/AddInfoButton';
 import { DeleteButton } from '../components/widgets/DeleteButton';
 import { InfoUpload } from '../components/widgets/InfoUpload';
 import { SortDropdown } from '../components/widgets/SortDropdown';
 import { InfoTable } from '../components/InfoTable';
 import { GetBetween } from '../components/GetBetween';
+import { CheckpointTable } from '../components/CheckpointTable';
 
 export const Home = () => {
+  const [openList, setOpenList] = useState(false);
+  const [points, setPoints] = useState([]);
   const [timeFilter, setTimeFilter] = useState();
   const [levelFilter, setLevelFilter] = useState([0, 9.9]);
   const [sortKey, setSortKey] = useState(0);
@@ -109,12 +112,35 @@ export const Home = () => {
     getFilteredInfo();
   }
 
+  const getDangerPoints = async () => {
+    const response = await fetch('/point/danger');
+    const body = await response.json();
+    setPoints(body.data);
+  }
+
 
   useEffect(() => {getFilteredInfo();}, [sortKey, timeFilter, levelFilter]);
   return (
     <div>
       {context}
-      <h1>EARTHQUAKE INFO</h1>
+      <h1>
+        EARTHQUAKE INFO
+        <br />
+        <Space>
+          <a href='/pointview'>
+            <Button type='primary'>Checkpoints</Button>
+          </a>
+          <Button
+            type='primary'
+            onClick={() => {
+              getDangerPoints();
+              setOpenList(true);
+            }}
+          >
+            Points in Danger
+          </Button>
+        </Space>
+      </h1>
       <Space className='control-panel'>
         <SortDropdown onClick={(key) => {setSortKey(key.key);}} />
         <AddInfoButton loading={loading} addInfo={addInfo} />
@@ -157,6 +183,13 @@ export const Home = () => {
           setLoading(false);
         }}
       />
+      <Modal
+        open={openList}
+        onOk={() => setOpenList(false)}
+        onCancel={() => setOpenList(false)}
+      >
+        <CheckpointTable points={points} onChange={getDangerPoints} />
+      </Modal>
     </div>
   );
 }

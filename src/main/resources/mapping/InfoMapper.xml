@@ -1,54 +1,56 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
-    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.sugon.mybatis.mapper.InfoMapper">
-    <insert id="addInfo" parameterType="Info">
-        INSERT INTO info.nature_monitor_earthquakeinfo VALUES
-        (#{id}, #{time}, #{lat}, #{lon}, #{deep}, #{level}, #{position})
-    </insert>
+  <insert id="addInfo" parameterType="Info">
+    INSERT INTO info.nature_monitor_earthquakeinfo VALUES
+    (#{id}, #{time}, #{lat}, #{lon}, #{deep}, #{level}, #{position})
+  </insert>
 
-    <delete id="deleteInfoById" parameterType="int">
-        DELETE FROM info.nature_monitor_earthquakeinfo WHERE Id = #{id}
-    </delete>
+  <delete id="deleteInfoById" parameterType="int">
+    DELETE FROM info.nature_monitor_earthquakeinfo WHERE Id = #{id}
+  </delete>
 
-    <update id="updateInfo" parameterType="Info">
-        UPDATE info.nature_monitor_earthquakeinfo SET
-        Time = #{time}, Lat = #{lat}, Lon = #{lon}, Deep = #{deep},
-        Level = #{level}, Position = #{position} WHERE Id = #{id}
-    </update>
+  <update id="updateInfo" parameterType="Info">
+    UPDATE info.nature_monitor_earthquakeinfo SET
+    Time = #{time}, Lat = #{lat}, Lon = #{lon}, Deep = #{deep},
+    Level = #{level}, Position = #{position} WHERE Id = #{id}
+  </update>
 
-    <select id="getAllInfo" resultType="Info">
-        SELECT * FROM info.nature_monitor_earthquakeinfo
-        ORDER BY Id ASC
-    </select>
+  <select id="getAllInfo" resultType="Info">
+    SELECT * FROM info.nature_monitor_earthquakeinfo
+    ORDER BY Id ASC
+  </select>
 
-    <select id="getFilteredInfo" parameterType="String" resultType="Info">
-        SELECT * FROM info.nature_monitor_earthquakeinfo WHERE
-        Time BETWEEN #{st} AND #{ed} AND Level BETWEEN #{d1} AND #{d2}
-        ORDER BY ${key} ASC
-    </select>
+  <select id="getFilteredInfo" parameterType="String" resultType="Info">
+    SELECT * FROM info.nature_monitor_earthquakeinfo WHERE
+    Time BETWEEN #{st} AND #{ed} AND Level BETWEEN #{d1} AND #{d2}
+    ORDER BY ${key} ASC
+  </select>
 
-    <select id="getInfoById" parameterType="int" resultType="Info">
-        SELECT * FROM info.nature_monitor_earthquakeinfo WHERE Id = #{id}
-    </select>
+  <select id="getInfoById" parameterType="int" resultType="Info">
+    SELECT * FROM info.nature_monitor_earthquakeinfo WHERE Id = #{id}
+  </select>
 
-    <select id="getDangerPointsById" parameterType="int" resultType="Checkpoint">
-        SELECT x.* FROM info.checkpoint x, (
-            SELECT a.Id, (a.Lat-b.Lat) * (a.Lat-b.Lat) + (a.Lon-b.Lon) * (a.Lon-b.Lon) k
-            FROM info.checkpoint a, (
-                SELECT Lat, Lon FROM info.nature_monitor_earthquakeinfo WHERE Id = #{id}
-            ) b WHERE (a.Lat-b.Lat) * (a.Lat-b.Lat) + (a.Lon-b.Lon) * (a.Lon-b.Lon) &lt; 5
-            GROUP BY a.Id
-        ) y WHERE x.Id = y.Id ORDER BY y.k ASC
-    </select>
+  <select id="getDangerPointsById" parameterType="int" resultType="Checkpoint">
+    SELECT x.* FROM info.checkpoint x, (
+      SELECT a.Id, (a.Lat-b.Lat) * (a.Lat-b.Lat) +
+        (180-ABS(ABS(a.Lon-b.Lon)-180)) * (180-ABS(ABS(a.Lon-b.Lon)-180)) dis
+      FROM info.checkpoint a, (
+        SELECT Lat, Lon FROM info.nature_monitor_earthquakeinfo WHERE Id = #{Id}
+      ) b WHERE (a.Lat-b.Lat) * (a.Lat-b.Lat) +
+        (180-ABS(ABS(a.Lon-b.Lon)-180)) * (180-ABS(ABS(a.Lon-b.Lon)-180)) &lt; 500
+      GROUP BY a.Id
+    ) y WHERE x.Id = y.Id ORDER BY y.dis ASC
+  </select>
 
-    <select id="countId" parameterType="int" resultType="int">
-        SELECT COUNT(CASE WHEN Id = #{id} THEN 1 END)
-        FROM info.nature_monitor_earthquakeinfo
-    </select>
+  <select id="countId" parameterType="int" resultType="int">
+    SELECT COUNT(CASE WHEN Id = #{id} THEN 1 END)
+    FROM info.nature_monitor_earthquakeinfo
+  </select>
 
-    <delete id="clear" parameterType="String">
-        DELETE FROM info.nature_monitor_earthquakeinfo WHERE
-        Time BETWEEN #{st} AND #{ed} AND Level BETWEEN #{d1} AND #{d2}
-    </delete>
+  <delete id="clear" parameterType="String">
+    DELETE FROM info.nature_monitor_earthquakeinfo WHERE
+    Time BETWEEN #{st} AND #{ed} AND Level BETWEEN #{d1} AND #{d2}
+  </delete>
 </mapper>

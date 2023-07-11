@@ -1,7 +1,8 @@
-import { Table, Button, Space } from 'antd';
+import { Table, Button, Space, Modal } from 'antd';
 import { ModModal } from './widgets/ModModal';
 import { DeleteButton } from './widgets/DeleteButton';
 import { useState } from 'react';
+import { CheckpointTable } from './CheckpointTable';
 
 const cols = [
   {title: 'Id', dataIndex: 'id'},
@@ -17,6 +18,8 @@ const cols = [
 export const InfoTable = ({updateInfo, deleteInfo, loading,
       infoList, selectedRowKeys, onChange}) => {
   const [openMod, setOpenMod] = useState(-1);
+  const [openList, setOpenList] = useState(-1);
+  const [points, setPoints] = useState([]);
   const rowSelection = {
     selectedRowKeys,
     onChange,
@@ -27,6 +30,12 @@ export const InfoTable = ({updateInfo, deleteInfo, loading,
     ],
   };
 
+  const getDangerPoints = async (index) => {
+    const response = await fetch('info/danger/' + infoList[index].id);
+    const body = await response.json();
+    setPoints(body.data);
+  }
+
   return (
     <div>
       <Table
@@ -35,6 +44,12 @@ export const InfoTable = ({updateInfo, deleteInfo, loading,
         dataSource={infoList.map((info) => {
           info.modify = (
             <Space>
+              <Button loading={loading} onClick={() => {
+                getDangerPoints(info.key);
+                setOpenList(info.key);
+              }}>
+                Close Points
+              </Button>
               <Button loading={loading} onClick={() => setOpenMod(info.key)}>
                 Modify
               </Button>
@@ -52,6 +67,14 @@ export const InfoTable = ({updateInfo, deleteInfo, loading,
         updateInfo={updateInfo}
         closeModal={() => setOpenMod(-1)}
       />
+      <Modal
+        open={openList ^ -1}
+        onOk={() => setOpenList(-1)}
+        onCancel={() => setOpenList(-1)}
+      >
+        <CheckpointTable points={points} onChange={() => getDangerPoints(openList)} />
+      </Modal>
+        
     </div>
   );
 }
