@@ -1,12 +1,12 @@
-import './styles/App.css';
+import '../styles/App.css';
 import { useEffect, useState } from 'react';
 import { message, Space } from 'antd';
-import { AddInfoButton } from './components/widgets/AddInfoButton';
-import { DeleteButton } from './components/widgets/DeleteButton';
-import { InfoUpload } from './components/widgets/InfoUpload';
-import { SortDropdown } from './components/widgets/SortDropdown';
-import { InfoTable } from './components/InfoTable';
-import { GetBetween } from './components/GetBetween';
+import { AddInfoButton } from '../components/widgets/AddInfoButton';
+import { DeleteButton } from '../components/widgets/DeleteButton';
+import { InfoUpload } from '../components/widgets/InfoUpload';
+import { SortDropdown } from '../components/widgets/SortDropdown';
+import { InfoTable } from '../components/InfoTable';
+import { GetBetween } from '../components/GetBetween';
 
 const App = () => {
   const [timeFilter, setTimeFilter] = useState();
@@ -60,22 +60,6 @@ const App = () => {
   const getFilteredInfo = async () => {
     setLoading(true);
     const infoUrl = getUrl(true);
-    const response = await fetch(infoUrl);
-    const body = await response.json();
-    handleError(body, true);
-    setLoading(false);
-    setInfoList(body.data.map(
-      (info, index) => {
-        info.key = index;
-        return info;
-      },
-    ));
-    setSelectedKeys([]);
-  }
-
-  const getAllInfo = async () => {
-    setLoading(true);
-    const infoUrl = '/info/filter';
     const response = await fetch(infoUrl);
     const body = await response.json();
     handleError(body, true);
