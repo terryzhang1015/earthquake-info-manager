@@ -14,8 +14,7 @@
   <select id="getAllDangerPoints" resultType="Checkpoint">
     SELECT x.* FROM info.checkpoint x, (
       SELECT a.Id FROM info.checkpoint a, info.nature_monitor_earthquakeinfo b
-      WHERE (a.Lat-b.Lat) * (a.Lat-b.Lat) +
-        (180-ABS(ABS(a.Lon-b.Lon)-180)) * (180-ABS(ABS(a.Lon-b.Lon)-180)) &lt; 500
+      WHERE ACOS(COS((a.Lat-b.Lat)*PI()/180)*COS((180-ABS(ABS(a.Lon-b.Lon)-180))*PI()/180)) &lt; 0.1
       GROUP BY a.Id
     ) y WHERE x.Id = y.Id ORDER BY x.Id ASC
   </select>
@@ -24,12 +23,10 @@
     SELECT res.Id, res.Time, res.Lat, res.Lon, res.Deep, res.Level, res.Position FROM (
       SELECT *, FIRST_VALUE(t.dis) OVER (ORDER BY t.dis) FROM (
         SELECT b.*,
-        (a.Lat-b.Lat) * (a.Lat-b.Lat) +
-          (180-ABS(ABS(a.Lon-b.Lon)-180)) * (180-ABS(ABS(a.Lon-b.Lon)-180)) dis
+        ACOS(COS((a.Lat-b.Lat)*PI()/180)*COS((180-ABS(ABS(a.Lon-b.Lon)-180))*PI()/180)) dis
         FROM (SELECT Lat, Lon from info.checkpoint WHERE Id = #{id}) a,
         info.nature_monitor_earthquakeinfo b WHERE
-        (a.Lat-b.Lat) * (a.Lat-b.Lat) +
-          (180-ABS(ABS(a.Lon-b.Lon)-180)) * (180-ABS(ABS(a.Lon-b.Lon)-180)) &lt; 500
+        ACOS(COS((a.Lat-b.Lat)*PI()/180)*COS((180-ABS(ABS(a.Lon-b.Lon)-180))*PI()/180)) &lt; 0.1
         GROUP BY b.Id
       ) t LIMIT 1
     ) res

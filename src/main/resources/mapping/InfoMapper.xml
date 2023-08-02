@@ -34,12 +34,10 @@
 
   <select id="getDangerPointsById" parameterType="int" resultType="Checkpoint">
     SELECT x.* FROM info.checkpoint x, (
-      SELECT a.Id, (a.Lat-b.Lat) * (a.Lat-b.Lat) +
-        (180-ABS(ABS(a.Lon-b.Lon)-180)) * (180-ABS(ABS(a.Lon-b.Lon)-180)) dis
+      SELECT a.Id, ACOS(COS((a.Lat-b.Lat)*PI()/180)*COS((180-ABS(ABS(a.Lon-b.Lon)-180))*PI()/180)) dis
       FROM info.checkpoint a, (
         SELECT Lat, Lon FROM info.nature_monitor_earthquakeinfo WHERE Id = #{Id}
-      ) b WHERE (a.Lat-b.Lat) * (a.Lat-b.Lat) +
-        (180-ABS(ABS(a.Lon-b.Lon)-180)) * (180-ABS(ABS(a.Lon-b.Lon)-180)) &lt; 500
+      ) b WHERE ACOS(COS((a.Lat-b.Lat)*PI()/180)*COS((180-ABS(ABS(a.Lon-b.Lon)-180))*PI()/180)) &lt; 0.1
       GROUP BY a.Id
     ) y WHERE x.Id = y.Id ORDER BY y.dis ASC
   </select>

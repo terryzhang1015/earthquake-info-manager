@@ -5,7 +5,7 @@ export const CheckpointPage = () => {
   const [points, setPoints] = useState([]);
 
   const getAllPoints = async () => {
-    const response = await fetch('/point');
+    const response = await fetch('/point/danger');
     const body = await response.json();
     setPoints(body.data);
   }
@@ -18,7 +18,10 @@ export const CheckpointPage = () => {
     getAllPoints();
   }
 
-  useEffect(() => {getAllPoints();}, []);
+  useEffect(() => {
+    getAllPoints();
+    setInterval(() => getAllPoints(), 5000);
+  }, []);
 
   return (
     <>
